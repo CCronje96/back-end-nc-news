@@ -196,7 +196,7 @@ describe("formatArticles", () => {
         "icellusedkars",
         "some gifs",
         new Date("2020-11-03T09:12:00.000Z"),
-        undefined,
+        0,
         "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
       ],
     ];

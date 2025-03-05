@@ -18,7 +18,7 @@ formatArticles = (articleData) => {
       updatedArticle.author,
       updatedArticle.body,
       updatedArticle.created_at,
-      updatedArticle.votes,
+      updatedArticle.votes || 0,
       updatedArticle.article_img_url,
     ];
   });
