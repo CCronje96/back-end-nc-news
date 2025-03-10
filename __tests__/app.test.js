@@ -86,7 +86,7 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-xdescribe("/api/articles", () => {
+describe("/api/articles", () => {
   test("GET 200: Responds with an array of article topics, each with expected properties, sorted by date in descending order", () => {
     return request(app)
       .get("/api/articles")

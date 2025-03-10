@@ -1,6 +1,16 @@
 const { request } = require("../app");
-const { selectArticleById } = require("../models/articles.models");
+const {
+  selectArticleById,
+  selectAllArticles,
+} = require("../models/articles.models");
 const { checkExists } = require("../utils");
+
+exports.getAllArticles = (request, response, next) => {
+  selectAllArticles().then((articles) => {
+    console.log("ARTICLES", articles);
+    response.status(200).send({ articles: articles });
+  });
+};
 
 exports.getArticleById = (request, response, next) => {
   const { article_id } = request.params;

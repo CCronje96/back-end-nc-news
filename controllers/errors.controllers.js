@@ -5,12 +5,11 @@ exports.handleServerErrors = (error, request, response, next) => {
 exports.handlePsqlErrors = (error, request, response, next) => {
   if (error.code === "22P02") {
     response.status(400).send({ message: "bad request" });
-  }
-  next(error);
+  } else next(error);
 };
 
 exports.handleCustomErrors = (error, request, response, next) => {
   if (error.code) {
     response.status(404).send({ message: "not found" });
-  }
+  } else next(error);
 };
