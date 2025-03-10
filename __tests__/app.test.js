@@ -51,6 +51,28 @@ describe("/api/topics", () => {
   });
 });
 
+describe("/api/articles", () => {
+  test("GET 200: Responds with an array of article topics, each with expected properties, sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+      });
+  });
+});
+
 describe("/api/articles/:article_id", () => {
   test("GET 200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint", () => {
     return request(app)
@@ -76,7 +98,7 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("bad request");
       });
   });
-  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist'", () => {
+  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
     return request(app)
       .get("/api/articles/58")
       .expect(404)
@@ -86,24 +108,40 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe("/api/articles", () => {
-  test("GET 200: Responds with an array of article topics, each with expected properties, sorted by date in descending order", () => {
+describe.only("/api/articles/:article_id/comments", () => {
+  test("GET 200: Responds with an array of comment objects for the given article_id, each with the expected properties, in descending order by date", () => {
     return request(app)
-      .get("/api/articles")
+      .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        const articles = body.articles;
-        expect(articles.length).toBe(13);
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-        articles.forEach((article) => {
-          expect(article).toHaveProperty("author");
-          expect(article).toHaveProperty("title");
-          expect(article).toHaveProperty("topic");
-          expect(article).toHaveProperty("created_at");
-          expect(article).toHaveProperty("votes");
-          expect(article).toHaveProperty("article_img_url");
-          expect(article).toHaveProperty("comment_count");
+        const comments = body.comments;
+        expect(comments.length).toBe(11);
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
         });
+      });
+  });
+  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    return request(app)
+      .get("/api/articles/three/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+    return request(app)
+      .get("/api/articles/58/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
       });
   });
 });
