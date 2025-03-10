@@ -108,8 +108,8 @@ describe("/api/articles/:article_id", () => {
   });
 });
 
-describe.only("/api/articles/:article_id/comments", () => {
-  test("GET 200: Responds with an array of comment objects for the given article_id, each with the expected properties, in descending order by date", () => {
+describe("/api/articles/:article_id/comments", () => {
+  test.only("GET 200: Responds with an array of comment objects for the given article_id, each with the expected properties, in descending order by date", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
