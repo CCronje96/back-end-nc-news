@@ -24,8 +24,8 @@ describe("/notAPath", () => {
   });
 });
 
-describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
+describe("/api", () => {
+  test("GET 200: Responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -66,6 +66,22 @@ describe("/api/articles/:article_id", () => {
         expect(article).toHaveProperty("created_at");
         expect(article).toHaveProperty("votes");
         expect(article).toHaveProperty("article_img_url");
+      });
+  });
+  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    return request(app)
+      .get("/api/articles/three")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist'", () => {
+    return request(app)
+      .get("/api/articles/58")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
       });
   });
 });
