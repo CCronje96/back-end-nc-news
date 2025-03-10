@@ -9,6 +9,7 @@ const { getAllTopics } = require("./controllers/topics.controllers");
 const {
   getArticleById,
   getAllArticles,
+  getCommentsByArticleId,
 } = require("./controllers/articles.controllers");
 const app = express();
 
@@ -19,6 +20,8 @@ app.get("/api/topics", getAllTopics);
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.all("*", (request, response, next) => {
   response.status(404).send({ message: "path not found" });
