@@ -1,0 +1,14 @@
+const { request } = require("../app");
+const { selectArticleById } = require("../models/articles.models");
+
+exports.getArticleById = (request, response, next) => {
+  const { article_id } = request.params;
+  selectArticleById(article_id).then((article) => {
+    response.status(200).send({ article: article });
+  });
+};
+
+// receive the request
+// extract necessary info
+// invoke the model
+// sends back the response

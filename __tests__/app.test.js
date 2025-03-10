@@ -36,7 +36,7 @@ describe("GET /api", () => {
 });
 
 describe("/api/topics", () => {
-  test("GET 200: Responds with an array of topic objects, each with a slug and description property", () => {
+  test("GET 200: Responds with an array of topic objects, each with expected properties", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -46,6 +46,47 @@ describe("/api/topics", () => {
         topics.forEach((topic) => {
           expect(topic).toHaveProperty("slug");
           expect(topic).toHaveProperty("description");
+        });
+      });
+  });
+});
+
+describe("/api/articles/:article_id", () => {
+  test("GET 200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        expect(article.article_id).toBe(3);
+        expect(article).toHaveProperty("author");
+        expect(article).toHaveProperty("title");
+        expect(article).toHaveProperty("body");
+        expect(article).toHaveProperty("topic");
+        expect(article).toHaveProperty("created_at");
+        expect(article).toHaveProperty("votes");
+        expect(article).toHaveProperty("article_img_url");
+      });
+  });
+});
+
+xdescribe("/api/articles", () => {
+  test("GET 200: Responds with an array of article topics, each with expected properties, sorted by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
         });
       });
   });
