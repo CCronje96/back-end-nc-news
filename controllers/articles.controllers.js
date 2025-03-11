@@ -48,7 +48,6 @@ exports.postCommentByArticleId = (request, response, next) => {
   const comment = request.body;
   insertCommentByArticleId(article_id, comment)
     .then((insertedComment) => {
-      console.log(insertedComment);
       response.status(201).send({ insertedComment: insertedComment });
     })
     .catch((error) => {
