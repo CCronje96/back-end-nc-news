@@ -10,7 +10,7 @@ exports.handlePsqlErrors = (error, request, response, next) => {
 };
 
 exports.handleCustomErrors = (error, request, response, next) => {
-  if (error.code) {
+  if (error.status) {
     response.status(404).send({ message: "not found" });
   } else next(error);
 };
