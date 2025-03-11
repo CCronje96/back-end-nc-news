@@ -10,8 +10,11 @@ const {
   getArticleById,
   getAllArticles,
   getCommentsByArticleId,
+  postCommentByArticleId,
 } = require("./controllers/articles.controllers");
 const app = express();
+
+app.use(express.json());
 
 app.get("/api", getAllEndpoints);
 
@@ -22,6 +25,8 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.all("*", (request, response, next) => {
   response.status(404).send({ message: "path not found" });

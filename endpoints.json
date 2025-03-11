@@ -29,15 +29,16 @@
   "GET /api/articles/:article_id": {
     "description": "serves an article object as per parametric endpoint", 
     "queries": [], 
-    "exampleResponse": { "article": {
-      "title": "Living in the shadow of a great man",
-      "topic": "mitch",
-      "author": "butter_bridge",
-      "body": "I find this existence challenging",
-      "created_at": 1594329060000,
-      "votes": 100,
-      "article_img_url":
-        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    "exampleResponse": { 
+      "article": {
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "article_img_url":
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
         }
       }
     },
@@ -53,6 +54,23 @@
             "votes": 0,
             "author": "icellusedkars",
             "created_at": "2020-11-03T21:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "POST /api/articles/:article_id/comments":{
+      "description": "serves an inserted comment object for a specified article", 
+      "queries": [],
+      "requiredProperties": ["body", "(existing) author"], 
+      "exampleResponse": {
+        "comments": [
+          {
+            "comment_id": 19,
+            "article_id": 3,
+            "body": "I love using gifs, there's one for every occasion",
+            "votes": 0,
+            "author": "butter_bridge",
+            "created_at": "2025-03-11T10:15:33.533Z"
           }
         ]
       }

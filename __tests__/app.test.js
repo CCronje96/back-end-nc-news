@@ -180,4 +180,60 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toBe("not found");
       });
   });
+  test("POST 201: Creates a new comment object and inserts the comment into the database, responding with the inserted comment object", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+        username: "butter_bridge",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const { comment_id, article_id, author } = body.insertedComment;
+        expect(comment_id).toBe(19);
+        expect(article_id).toBe(3);
+        expect(author).toBe("butter_bridge");
+        expect(body.insertedComment.body).toBe(
+          "I love using gifs, there's one for every occasion"
+        );
+      });
+  });
+  test.only("POST 400: Responds with bad request when request body does not contain required properties", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+  test.todo(
+    "POST 400: Responds with bad request when request body has required properties, but with invalid values"
+  );
+  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    return request(app)
+      .post("/api/articles/three/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+        username: "butter_bridge",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+    return request(app)
+      .post("/api/articles/58/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+        username: "butter_bridge",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
 });
