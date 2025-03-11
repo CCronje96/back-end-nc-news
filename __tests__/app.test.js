@@ -133,6 +133,14 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("not found");
       });
   });
+  test("PATCH 200: Updates an article specified by article_id, responding with updated article", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.message).toBe("not found");
+      });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -222,7 +230,19 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toBe("bad request");
       });
   });
-  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
+  test("POST 400: Responds with bad request when request body has required properties, but with invalid values where property value is foreign key referenced from another table", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+        username: "someoneNew",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
+  test("POST 400: Responds with 'bad request' when article_id provided is invalid'", () => {
     return request(app)
       .post("/api/articles/three/comments")
       .send({
@@ -234,16 +254,16 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toBe("bad request");
       });
   });
-  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+  test("POST 400: Responds with 'bad request' when article_id provided is valid, but doesn't exist, which is a requirement for comment to be created", () => {
     return request(app)
       .post("/api/articles/58/comments")
       .send({
         body: "I love using gifs, there's one for every occasion",
         username: "butter_bridge",
       })
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
-        expect(body.message).toBe("not found");
+        expect(body.message).toBe("bad request");
       });
   });
 });

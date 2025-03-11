@@ -3,7 +3,7 @@ exports.handleServerErrors = (error, request, response, next) => {
 };
 
 exports.handlePsqlErrors = (error, request, response, next) => {
-  const psqlErrors = ["22P02", "23502", "22001"];
+  const psqlErrors = ["22P02", "23502", "23503", "22001"];
   if (psqlErrors.includes(error.code)) {
     response.status(400).send({ message: "bad request" });
   } else next(error);
