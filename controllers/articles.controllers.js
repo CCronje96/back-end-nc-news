@@ -1,8 +1,9 @@
-const { request } = require("../app");
+const { request, response } = require("../app");
 const {
   selectArticleById,
   selectAllArticles,
   selectCommentsByArticleId,
+  insertCommentByArticleId,
 } = require("../models/articles.models");
 const { checkExists } = require("../utils");
 
@@ -36,6 +37,18 @@ exports.getCommentsByArticleId = (request, response, next) => {
   Promise.all(promises)
     .then(([comments]) => {
       response.status(200).send({ comments: comments });
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.postCommentByArticleId = (request, response, next) => {
+  const { article_id } = request.params;
+  const comment = request.body;
+  insertCommentByArticleId(article_id, comment)
+    .then((insertedComment) => {
+      response.status(201).send({ insertedComment: insertedComment });
     })
     .catch((error) => {
       next(error);
