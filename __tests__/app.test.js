@@ -99,189 +99,259 @@ describe("/api/articles", () => {
 });
 
 describe("/api/articles/:article_id", () => {
-  test("GET 200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint", () => {
-    return request(app)
-      .get("/api/articles/3")
-      .expect(200)
-      .then(({ body }) => {
-        const article = body.article;
-        expect(article.article_id).toBe(3);
-        expect(article.author).toBe("icellusedkars");
-        expect(article.title).toBe("Eight pug gifs that remind me of mitch");
-        expect(article.body).toBe("some gifs");
-        expect(article.topic).toBe("mitch");
-        expect(article.created_at).toBe("2020-11-03T09:12:00.000Z");
-        expect(article.votes).toBe(0);
-        expect(article.article_img_url).toBe(
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-        );
-      });
+  describe("GET", () => {
+    test("200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
+          expect(article.article_id).toBe(3);
+          expect(article.author).toBe("icellusedkars");
+          expect(article.title).toBe("Eight pug gifs that remind me of mitch");
+          expect(article.body).toBe("some gifs");
+          expect(article.topic).toBe("mitch");
+          expect(article.created_at).toBe("2020-11-03T09:12:00.000Z");
+          expect(article.votes).toBe(0);
+          expect(article.article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+        });
+    });
+    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+      return request(app)
+        .get("/api/articles/three")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+      return request(app)
+        .get("/api/articles/58")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
   });
-  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
-    return request(app)
-      .get("/api/articles/three")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
-    return request(app)
-      .get("/api/articles/58")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.message).toBe("not found");
-      });
-  });
-  test("PATCH 200: Updates an article specified by article_id, responding with updated article - increase votes by 3 - leaving other property values unchanged", () => {
-    return request(app)
-      .patch("/api/articles/5")
-      .send({ inc_votes: 3 })
-      .expect(200)
-      .then(({ body }) => {
-        const {
-          article_id,
-          title,
-          topic,
-          author,
-          created_at,
-          votes,
-          article_img_url,
-        } = body.updatedArticle;
-        expect(votes).toBe(3);
-        expect(article_id).toBe(5);
-        expect(title).toBe("UNCOVERED: catspiracy to bring down democracy");
-        expect(topic).toBe("cats");
-        expect(author).toBe("rogersop");
-        expect(created_at).toBe("2020-08-03T13:14:00.000Z");
-        expect(article_img_url).toBe(
-          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-        );
-      });
+  describe("PATCH", () => {
+    test("200: Updates an article specified by article_id, responding with updated article - INCREASE votes - leaving other property values unchanged", () => {
+      return request(app)
+        .patch("/api/articles/5")
+        .send({ inc_votes: 3 })
+        .expect(200)
+        .then(({ body }) => {
+          const {
+            article_id,
+            title,
+            topic,
+            author,
+            created_at,
+            votes,
+            article_img_url,
+          } = body.updatedArticle;
+          expect(votes).toBe(3);
+          expect(article_id).toBe(5);
+          expect(title).toBe("UNCOVERED: catspiracy to bring down democracy");
+          expect(topic).toBe("cats");
+          expect(author).toBe("rogersop");
+          expect(created_at).toBe("2020-08-03T13:14:00.000Z");
+          expect(article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+        });
+    });
+    test("200: Updates an article specified by article_id, responding with updated article - DECREASE votes - leaving other property values unchanged", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: -46 })
+        .expect(200)
+        .then(({ body }) => {
+          const {
+            article_id,
+            title,
+            topic,
+            author,
+            created_at,
+            votes,
+            article_img_url,
+          } = body.updatedArticle;
+          expect(votes).toBe(54);
+          expect(article_id).toBe(1);
+          expect(title).toBe("Living in the shadow of a great man");
+          expect(topic).toBe("mitch");
+          expect(author).toBe("butter_bridge");
+          expect(created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+        });
+    });
+    test("400: Responds with bad request when request body does not contain required properties", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "three" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+      return request(app)
+        .patch("/api/articles/three")
+        .send({ inc_votes: 3 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+      return request(app)
+        .patch("/api/articles/58")
+        .send({ inc_votes: 3 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
   });
 });
 
 describe("/api/articles/:article_id/comments", () => {
-  test("GET 200: Responds with an array of comment objects for the given article_id, each with the expected properties, in descending order by date", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
-      .then(({ body }) => {
-        const comments = body.comments;
-        expect(comments.length).toBe(11);
-        expect(comments).toBeSortedBy("created_at", { descending: true });
-        comments.forEach((comment) => {
-          expect(comment.article_id).toBe(1);
-          expect(comment).toHaveProperty("comment_id");
-          expect(typeof comment.comment_id).toBe("number");
-          expect(comment).toHaveProperty("votes");
-          expect(typeof comment.votes).toBe("number");
-          expect(comment).toHaveProperty("created_at");
-          expect(typeof comment.created_at).toBe("string");
-          expect(comment).toHaveProperty("author");
-          expect(typeof comment.author).toBe("string");
-          expect(comment).toHaveProperty("body");
-          expect(typeof comment.body).toBe("string");
+  describe("GET", () => {
+    test("200: Responds with an array of comment objects for the given article_id, each with the expected properties, in descending order by date", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const comments = body.comments;
+          expect(comments.length).toBe(11);
+          expect(comments).toBeSortedBy("created_at", { descending: true });
+          comments.forEach((comment) => {
+            expect(comment.article_id).toBe(1);
+            expect(comment).toHaveProperty("comment_id");
+            expect(typeof comment.comment_id).toBe("number");
+            expect(comment).toHaveProperty("votes");
+            expect(typeof comment.votes).toBe("number");
+            expect(comment).toHaveProperty("created_at");
+            expect(typeof comment.created_at).toBe("string");
+            expect(comment).toHaveProperty("author");
+            expect(typeof comment.author).toBe("string");
+            expect(comment).toHaveProperty("body");
+            expect(typeof comment.body).toBe("string");
+          });
+          expect(comments[0].comment_id).toBe(5);
+          expect(comments[0].votes).toBe(0);
+          expect(comments[0].created_at).toBe("2020-11-03T21:00:00.000Z");
+          expect(comments[0].author).toBe("icellusedkars");
+          expect(comments[0].body).toBe("I hate streaming noses");
         });
-        expect(comments[0].comment_id).toBe(5);
-        expect(comments[0].votes).toBe(0);
-        expect(comments[0].created_at).toBe("2020-11-03T21:00:00.000Z");
-        expect(comments[0].author).toBe("icellusedkars");
-        expect(comments[0].body).toBe("I hate streaming noses");
-      });
+    });
+    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+      return request(app)
+        .get("/api/articles/three/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+      return request(app)
+        .get("/api/articles/58/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
   });
-  test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
-    return request(app)
-      .get("/api/articles/three/comments")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("GET 404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
-    return request(app)
-      .get("/api/articles/58/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.message).toBe("not found");
-      });
-  });
-  test("POST 201: Creates a new comment object and inserts the comment into the database, responding with the inserted comment object", () => {
-    return request(app)
-      .post("/api/articles/3/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-        username: "butter_bridge",
-      })
-      .expect(201)
-      .then(({ body }) => {
-        const { comment_id, article_id, author } = body.insertedComment;
-        expect(comment_id).toBe(19);
-        expect(article_id).toBe(3);
-        expect(author).toBe("butter_bridge");
-        expect(body.insertedComment.body).toBe(
-          "I love using gifs, there's one for every occasion"
-        );
-      });
-  });
-  test("POST 400: Responds with bad request when request body does not contain required properties", () => {
-    return request(app)
-      .post("/api/articles/3/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("POST 400: Responds with bad request when request body has required properties, but with invalid values", () => {
-    return request(app)
-      .post("/api/articles/3/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-        username:
-          "butter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridge",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("POST 400: Responds with bad request when request body has required properties, but with invalid values where property value is foreign key referenced from another table", () => {
-    return request(app)
-      .post("/api/articles/3/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-        username: "someoneNew",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("POST 400: Responds with 'bad request' when article_id provided is invalid'", () => {
-    return request(app)
-      .post("/api/articles/three/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-        username: "butter_bridge",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
-  });
-  test("POST 400: Responds with 'bad request' when article_id provided is valid, but doesn't exist, which is a requirement for comment to be created", () => {
-    return request(app)
-      .post("/api/articles/58/comments")
-      .send({
-        body: "I love using gifs, there's one for every occasion",
-        username: "butter_bridge",
-      })
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.message).toBe("bad request");
-      });
+  describe("POST", () => {
+    test("201: Creates a new comment object and inserts the comment into the database, responding with the inserted comment object", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+          username: "butter_bridge",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const { comment_id, article_id, author } = body.insertedComment;
+          expect(comment_id).toBe(19);
+          expect(article_id).toBe(3);
+          expect(author).toBe("butter_bridge");
+          expect(body.insertedComment.body).toBe(
+            "I love using gifs, there's one for every occasion"
+          );
+        });
+    });
+    test("400: Responds with bad request when request body does not contain required properties", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+          username:
+            "butter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridge",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values where property value is foreign key referenced from another table", () => {
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+          username: "someoneNew",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+      return request(app)
+        .post("/api/articles/three/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+          username: "butter_bridge",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with 'bad request' when article_id provided is valid, but doesn't exist, which is a requirement for comment to be created", () => {
+      return request(app)
+        .post("/api/articles/58/comments")
+        .send({
+          body: "I love using gifs, there's one for every occasion",
+          username: "butter_bridge",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
   });
 });
