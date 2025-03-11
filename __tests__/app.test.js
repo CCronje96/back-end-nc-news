@@ -355,3 +355,27 @@ describe("/api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE", () => {
+    test("204: Deletes the given comment by comment_id", () => {
+      return request(app).delete("/api/comments/5").expect(204);
+    });
+    test("400: Responds with bad request when given invalid comment_id", () => {
+      return request(app)
+        .delete("/api/comments/banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with not found when given valid comment_id which doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/58")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
