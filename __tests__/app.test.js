@@ -133,12 +133,30 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("not found");
       });
   });
-  test("PATCH 200: Updates an article specified by article_id, responding with updated article", () => {
+  test.only("PATCH 200: Updates an article specified by article_id, responding with updated article - increase votes by 3 - leaving other property values unchanged", () => {
     return request(app)
-      .get("/api/articles/5")
+      .patch("/api/articles/5")
+      .send({ inc_votes: 3 })
       .expect(200)
       .then(({ body }) => {
-        expect(body.message).toBe("not found");
+        const {
+          article_id,
+          title,
+          topic,
+          author,
+          created_at,
+          votes,
+          article_img_url,
+        } = body.updatedArticle;
+        expect(votes).toBe(3);
+        expect(article_id).toBe(5);
+        expect(title).toBe("UNCOVERED: catspiracy to bring down democracy");
+        expect(topic).toBe("cats");
+        expect(author).toBe("rogersop");
+        expect(created_at).toBe("2020-08-03T13:14:00.000Z");
+        expect(article_img_url).toBe(
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        );
       });
   });
 });

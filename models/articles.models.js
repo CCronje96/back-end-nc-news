@@ -42,6 +42,17 @@ exports.insertCommentByArticleId = (id, comment) => {
     });
 };
 
+exports.updateArticleById = (id, updatedValue) => {
+  return db
+    .query(`UPDATE articles SET votes = $1 WHERE article_id = $2 RETURNING *`, [
+      updatedValue,
+      id,
+    ])
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
 // interact with DB
 // necessary data manipulations
 // return back to controller
