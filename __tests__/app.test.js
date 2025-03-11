@@ -133,7 +133,7 @@ describe("/api/articles/:article_id", () => {
         expect(body.message).toBe("not found");
       });
   });
-  test.only("PATCH 200: Updates an article specified by article_id, responding with updated article - increase votes by 3 - leaving other property values unchanged", () => {
+  test("PATCH 200: Updates an article specified by article_id, responding with updated article - increase votes by 3 - leaving other property values unchanged", () => {
     return request(app)
       .patch("/api/articles/5")
       .send({ inc_votes: 3 })
