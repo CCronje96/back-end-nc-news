@@ -198,7 +198,7 @@ describe("/api/articles/:article_id/comments", () => {
         );
       });
   });
-  test.only("POST 400: Responds with bad request when request body does not contain required properties", () => {
+  test("POST 400: Responds with bad request when request body does not contain required properties", () => {
     return request(app)
       .post("/api/articles/3/comments")
       .send({
@@ -209,9 +209,19 @@ describe("/api/articles/:article_id/comments", () => {
         expect(body.message).toBe("bad request");
       });
   });
-  test.todo(
-    "POST 400: Responds with bad request when request body has required properties, but with invalid values"
-  );
+  test("POST 400: Responds with bad request when request body has required properties, but with invalid values", () => {
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send({
+        body: "I love using gifs, there's one for every occasion",
+        username:
+          "butter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridgebutter_bridge",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("bad request");
+      });
+  });
   test("GET 400: Responds with 'bad request' when article_id provided is invalid'", () => {
     return request(app)
       .post("/api/articles/three/comments")
