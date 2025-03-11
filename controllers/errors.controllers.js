@@ -3,14 +3,14 @@ exports.handleServerErrors = (error, request, response, next) => {
 };
 
 exports.handlePsqlErrors = (error, request, response, next) => {
-  const psqlErrors = ["22P02", "23502", "22001"];
+  const psqlErrors = ["22P02", "23502", "23503", "22001"];
   if (psqlErrors.includes(error.code)) {
     response.status(400).send({ message: "bad request" });
   } else next(error);
 };
 
 exports.handleCustomErrors = (error, request, response, next) => {
-  if (error.code) {
-    response.status(404).send({ message: "not found" });
+  if (error.status) {
+    response.status(error.status).send({ message: error.message });
   } else next(error);
 };
