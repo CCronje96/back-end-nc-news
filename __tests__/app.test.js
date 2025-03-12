@@ -71,7 +71,7 @@ describe("/api/articles", () => {
             expect(typeof article.created_at).toBe("string");
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
-            expect(typeof article.comment_count).toBe("string");
+            expect(typeof article.comment_count).toBe("number");
           });
           expect(articles[0].article_id).toBe(3);
           expect(articles[0].author).toBe("icellusedkars");
@@ -84,7 +84,7 @@ describe("/api/articles", () => {
           expect(articles[0].article_img_url).toBe(
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
           );
-          expect(articles[0].comment_count).toBe("2");
+          expect(articles[0].comment_count).toBe(2);
         });
     });
   });
@@ -132,7 +132,7 @@ describe("/api/articles", () => {
             expect(typeof article.created_at).toBe("string");
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
-            expect(typeof article.comment_count).toBe("string");
+            expect(typeof article.comment_count).toBe("number");
           });
           expect(articles[0].article_id).toBe(7);
           expect(articles[0].author).toBe("icellusedkars");
@@ -143,7 +143,7 @@ describe("/api/articles", () => {
           expect(articles[0].article_img_url).toBe(
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
           );
-          expect(articles[0].comment_count).toBe("0");
+          expect(articles[0].comment_count).toBe(0);
         });
     });
     test("400: Responds with bad request if order query is misspelled", () => {
@@ -198,7 +198,7 @@ describe("/api/articles", () => {
             expect(typeof article.created_at).toBe("string");
             expect(typeof article.votes).toBe("number");
             expect(typeof article.article_img_url).toBe("string");
-            expect(typeof article.comment_count).toBe("string");
+            expect(typeof article.comment_count).toBe("number");
           });
           expect(articles[0].article_id).toBe(5);
           expect(articles[0].author).toBe("rogersop");
@@ -210,7 +210,7 @@ describe("/api/articles", () => {
           expect(articles[0].article_img_url).toBe(
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
           );
-          expect(articles[0].comment_count).toBe("2");
+          expect(articles[0].comment_count).toBe(2);
         });
     });
     test("200: Responds with an empty array if TOPIC query provided is valid, but has no articles assigned to it", () => {
@@ -283,6 +283,7 @@ describe("/api/articles/:article_id", () => {
           expect(article.article_img_url).toBe(
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
           );
+          expect(article.comment_count).toBe(2);
         });
     });
     test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
