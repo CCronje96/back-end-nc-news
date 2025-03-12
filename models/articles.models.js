@@ -42,14 +42,18 @@ exports.insertCommentByArticleId = (id, comment) => {
     });
 };
 
-exports.updateArticleById = (id, votesChange) => {
-  if (!votesChange) {
-    return Promise.reject({ status: 400, message: "bad request" });
+exports.updateArticleById = (id, changeValue) => {
+  if (!changeValue) {
+    return db
+      .query(`SELECT * FROM articles WHERE article_id = $1`, [id])
+      .then(({ rows }) => {
+        return rows[0];
+      });
   } else {
     return db
       .query(
         `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
-        [votesChange, id]
+        [changeValue, id]
       )
       .then(({ rows }) => {
         return rows[0];

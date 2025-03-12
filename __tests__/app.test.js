@@ -44,9 +44,7 @@ describe("/api/topics", () => {
         const topics = body.topics;
         expect(topics.length).toBe(3);
         topics.forEach((topic) => {
-          expect(topic).toHaveProperty("slug");
           expect(typeof topic.slug).toBe("string");
-          expect(topic).toHaveProperty("description");
           expect(typeof topic.description).toBe("string");
         });
         expect(topics[0].slug).toBe("mitch");
@@ -65,21 +63,13 @@ describe("/api/articles", () => {
         expect(articles.length).toBe(13);
         expect(articles).toBeSortedBy("created_at", { descending: true });
         articles.forEach((article) => {
-          expect(article).toHaveProperty("article_id");
           expect(typeof article.article_id).toBe("number");
-          expect(article).toHaveProperty("author");
           expect(typeof article.author).toBe("string");
-          expect(article).toHaveProperty("title");
           expect(typeof article.title).toBe("string");
-          expect(article).toHaveProperty("topic");
           expect(typeof article.topic).toBe("string");
-          expect(article).toHaveProperty("created_at");
           expect(typeof article.created_at).toBe("string");
-          expect(article).toHaveProperty("votes");
           expect(typeof article.votes).toBe("number");
-          expect(article).toHaveProperty("article_img_url");
           expect(typeof article.article_img_url).toBe("string");
-          expect(article).toHaveProperty("comment_count");
           expect(typeof article.comment_count).toBe("string");
         });
         expect(articles[0].article_id).toBe(3);
@@ -95,6 +85,30 @@ describe("/api/articles", () => {
         );
         expect(articles[0].comment_count).toBe("2");
       });
+  });
+});
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("200: Responds with an array of all user objects, each with the expected properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const users = body.users;
+          expect(users.length).toBe(4);
+          users.forEach((user) => {
+            expect(typeof user.username).toBe("string");
+            expect(typeof user.name).toBe("string");
+            expect(typeof user.avatar_url).toBe("string");
+          });
+          expect(users[0].username).toBe("butter_bridge");
+          expect(users[0].name).toBe("jonny");
+          expect(users[0].avatar_url).toBe(
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+          );
+        });
+    });
   });
 });
 
@@ -188,15 +202,35 @@ describe("/api/articles/:article_id", () => {
           );
         });
     });
-    test("400: Responds with bad request when request body does not contain required properties", () => {
+    test("200: Responds with an unchanged article when an empty body is sent", () => {
       return request(app)
         .patch("/api/articles/1")
         .send({})
-        .expect(400)
+        .expect(200)
         .then(({ body }) => {
-          expect(body.message).toBe("bad request");
+          const {
+            article_id,
+            title,
+            topic,
+            author,
+            created_at,
+            votes,
+            article_img_url,
+          } = body.updatedArticle;
+          expect(votes).toBe(100);
+          expect(article_id).toBe(1);
+          expect(title).toBe("Living in the shadow of a great man");
+          expect(topic).toBe("mitch");
+          expect(author).toBe("butter_bridge");
+          expect(created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
         });
     });
+    test.todo(
+      "400: Responds with bad request when request body does not contain required properties due to misspelling of key - to be completed and code refactored for dynamicism once sprint is done"
+    );
     test("400: Responds with bad request when request body has required properties, but with invalid values", () => {
       return request(app)
         .patch("/api/articles/1")
@@ -239,15 +273,10 @@ describe("/api/articles/:article_id/comments", () => {
           expect(comments).toBeSortedBy("created_at", { descending: true });
           comments.forEach((comment) => {
             expect(comment.article_id).toBe(1);
-            expect(comment).toHaveProperty("comment_id");
             expect(typeof comment.comment_id).toBe("number");
-            expect(comment).toHaveProperty("votes");
             expect(typeof comment.votes).toBe("number");
-            expect(comment).toHaveProperty("created_at");
             expect(typeof comment.created_at).toBe("string");
-            expect(comment).toHaveProperty("author");
             expect(typeof comment.author).toBe("string");
-            expect(comment).toHaveProperty("body");
             expect(typeof comment.body).toBe("string");
           });
           expect(comments[0].comment_id).toBe(5);
