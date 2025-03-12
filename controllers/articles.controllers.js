@@ -8,9 +8,23 @@ const {
 const { checkExists } = require("../utils");
 
 exports.getAllArticles = (request, response, next) => {
-  selectAllArticles().then((articles) => {
-    response.status(200).send({ articles: articles });
-  });
+  const { sort_by, order } = request.query;
+
+  const validQueryParams = ["sort_by", "order"];
+  const invalidQueryParams = Object.keys(request.query).filter(
+    (key) => !validQueryParams.includes(key)
+  );
+  if (invalidQueryParams.length > 0) {
+    return response.status(400).send({ message: "bad request" });
+  }
+
+  selectAllArticles(sort_by, order)
+    .then((articles) => {
+      response.status(200).send({ articles: articles });
+    })
+    .catch((error) => {
+      next(error);
+    });
 };
 
 exports.getArticleById = (request, response, next) => {
