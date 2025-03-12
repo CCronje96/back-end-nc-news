@@ -1,17 +1,18 @@
 const db = require("../db/connection");
+const { getValidColumns, checkExists } = require("../utils");
 
-exports.selectAllArticles = (sort_by, order) => {
-  let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COALESCE(COUNT(comments.article_id), 0) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id `;
+exports.selectAllArticles = async (sort_by, order, topic) => {
+  let queryValue = [];
+  let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COALESCE(COUNT(comments.article_id), 0) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
-  const validColumns = [
-    "author",
-    "title",
-    "article_id",
-    "topic",
-    "created_at",
-    "votes",
-    "article_img_url",
-  ];
+  if (topic) {
+    queryValue.push(topic);
+    queryString += `WHERE topic = $1 `;
+  }
+
+  queryString += `GROUP BY articles.article_id `;
+  const table = "articles";
+  const validColumns = await getValidColumns(table);
 
   const validOrderValues = ["asc", "desc"];
 
@@ -27,8 +28,7 @@ exports.selectAllArticles = (sort_by, order) => {
   const validOrder = validOrderValues.includes(order) ? order : "desc";
 
   queryString += `ORDER BY ${validSortBy} ${validOrder}`;
-
-  return db.query(queryString).then(({ rows }) => {
+  return db.query(queryString, queryValue).then(({ rows }) => {
     return rows;
   });
 };
