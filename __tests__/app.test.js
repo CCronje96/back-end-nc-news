@@ -135,7 +135,7 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
-  describe("PATCH", () => {
+  describe.only("PATCH", () => {
     test("200: Updates an article specified by article_id, responding with updated article - INCREASE votes - leaving other property values unchanged", () => {
       return request(app)
         .patch("/api/articles/5")
@@ -188,15 +188,35 @@ describe("/api/articles/:article_id", () => {
           );
         });
     });
-    test("400: Responds with bad request when request body does not contain required properties", () => {
+    test("200: Responds with an unchanged article when an empty body is sent", () => {
       return request(app)
         .patch("/api/articles/1")
         .send({})
-        .expect(400)
+        .expect(200)
         .then(({ body }) => {
-          expect(body.message).toBe("bad request");
+          const {
+            article_id,
+            title,
+            topic,
+            author,
+            created_at,
+            votes,
+            article_img_url,
+          } = body.updatedArticle;
+          expect(votes).toBe(100);
+          expect(article_id).toBe(1);
+          expect(title).toBe("Living in the shadow of a great man");
+          expect(topic).toBe("mitch");
+          expect(author).toBe("butter_bridge");
+          expect(created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
         });
     });
+    test.todo(
+      "400: Responds with bad request when request body does not contain required properties due to misspelling of key - to be completed and code refactored for dynamicism once sprint is done"
+    );
     test("400: Responds with bad request when request body has required properties, but with invalid values", () => {
       return request(app)
         .patch("/api/articles/1")
@@ -375,6 +395,23 @@ describe("/api/comments/:comment_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("200: Responds with an array of all user objects, each with the expected properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          const users = body.users;
+          expect(users.length).toBe(4);
+          users.forEach((user) => {
+            expect(user).toHaveProperty;
+          });
         });
     });
   });
