@@ -165,6 +165,79 @@ describe("/api/articles", () => {
           expect(articles).toBeSortedBy("title");
         });
     });
+    test("400: Responds with bad request if either query is misspelled", () => {
+      return request(app)
+        .get("/api/articles?srt_by=title&order=asc")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request if either query value is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=tootle&order=asc")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+  });
+  describe("GET: topic", () => {
+    test("200: Responds with an array of articles, each with expected properties, filtered by TOPIC", () => {
+      return request(app)
+        .get("/api/articles?topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(articles.length).toBe(1);
+          articles.forEach((article) => {
+            expect(article.topic).toBe("cats");
+            expect(typeof article.article_id).toBe("number");
+            expect(typeof article.author).toBe("string");
+            expect(typeof article.title).toBe("string");
+            expect(typeof article.created_at).toBe("string");
+            expect(typeof article.votes).toBe("number");
+            expect(typeof article.article_img_url).toBe("string");
+            expect(typeof article.comment_count).toBe("string");
+          });
+          expect(articles[0].article_id).toBe(5);
+          expect(articles[0].author).toBe("rogersop");
+          expect(articles[0].title).toBe(
+            "UNCOVERED: catspiracy to bring down democracy"
+          );
+          expect(articles[0].created_at).toBe("2020-08-03T13:14:00.000Z");
+          expect(articles[0].votes).toBe(0);
+          expect(articles[0].article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+          expect(articles[0].comment_count).toBe("2");
+        });
+    });
+    test("200: Responds with an empty array if TOPIC query provided is valid, but has no articles assigned to it", () => {
+      return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(articles.length).toBe(0);
+        });
+    });
+    test("400: Responds with bad request if topic query is misspelled", () => {
+      return request(app)
+        .get("/api/articles?topc=cats")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with not found if queried topic doesn't exist", () => {
+      return request(app)
+        .get("/api/articles?topic=spoons")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
   });
 });
 

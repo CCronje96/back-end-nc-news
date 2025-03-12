@@ -8,18 +8,22 @@ const {
 const { checkExists } = require("../utils");
 
 exports.getAllArticles = (request, response, next) => {
-  const { sort_by, order } = request.query;
+  const { sort_by, order, topic } = request.query;
 
-  const validQueryParams = ["sort_by", "order"];
+  const validQueryParams = ["sort_by", "order", "topic"];
   const invalidQueryParams = Object.keys(request.query).filter(
     (key) => !validQueryParams.includes(key)
   );
   if (invalidQueryParams.length > 0) {
     return response.status(400).send({ message: "bad request" });
   }
+  const promises = [selectAllArticles(sort_by, order, topic)];
+  if (topic) {
+    promises.push(checkExists("topics", "slug", topic));
+  }
 
-  selectAllArticles(sort_by, order)
-    .then((articles) => {
+  Promise.all(promises)
+    .then(([articles]) => {
       response.status(200).send({ articles: articles });
     })
     .catch((error) => {
