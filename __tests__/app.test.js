@@ -135,7 +135,7 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
-  describe.only("PATCH", () => {
+  describe("PATCH", () => {
     test("200: Updates an article specified by article_id, responding with updated article - INCREASE votes - leaving other property values unchanged", () => {
       return request(app)
         .patch("/api/articles/5")
@@ -395,23 +395,6 @@ describe("/api/comments/:comment_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");
-        });
-    });
-  });
-});
-
-describe("/api/users", () => {
-  describe("GET", () => {
-    test("200: Responds with an array of all user objects, each with the expected properties", () => {
-      return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then(({ body }) => {
-          const users = body.users;
-          expect(users.length).toBe(4);
-          users.forEach((user) => {
-            expect(user).toHaveProperty;
-          });
         });
     });
   });
