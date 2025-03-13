@@ -154,6 +154,14 @@ describe("/api/articles", () => {
           expect(body.message).toBe("bad request");
         });
     });
+    test("400: Responds with bad request if order value is invalid", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title&order=banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
   });
   describe("GET: sort_by & order", () => {
     test("200: Responds with an array of articles, each with expected properties, sorted by ANY valid input column in ASC order if specified", () => {
