@@ -283,6 +283,14 @@ describe("/api/articles/:article_id", () => {
           expect(article.article_img_url).toBe(
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
           );
+        });
+    });
+    test("200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint - ADDITION of comment_count property", () => {
+      return request(app)
+        .get("/api/articles/3")
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
           expect(article.comment_count).toBe(2);
         });
     });

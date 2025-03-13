@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { getValidColumns, checkExists } = require("../utils");
+const { getValidColumns } = require("../utils");
 
 exports.selectAllArticles = async (sort_by, order, topic) => {
   let queryValue = [];

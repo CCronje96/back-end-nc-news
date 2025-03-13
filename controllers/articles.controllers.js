@@ -27,6 +27,7 @@ exports.getAllArticles = (request, response, next) => {
       response.status(200).send({ articles: articles });
     })
     .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
