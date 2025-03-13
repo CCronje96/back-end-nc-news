@@ -47,8 +47,11 @@ describe("/api/topics", () => {
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
         });
-        expect(topics[0].slug).toBe("mitch");
-        expect(topics[0].description).toBe("The man, the Mitch, the legend");
+        expect(topics[0]).toMatchObject({
+          slug: "mitch",
+          description: "The man, the Mitch, the legend",
+          img_url: "",
+        });
       });
   });
 });
@@ -73,18 +76,17 @@ describe("/api/articles", () => {
             expect(typeof article.article_img_url).toBe("string");
             expect(typeof article.comment_count).toBe("number");
           });
-          expect(articles[0].article_id).toBe(3);
-          expect(articles[0].author).toBe("icellusedkars");
-          expect(articles[0].title).toBe(
-            "Eight pug gifs that remind me of mitch"
-          );
-          expect(articles[0].topic).toBe("mitch");
-          expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
-          expect(articles[0].votes).toBe(0);
-          expect(articles[0].article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
-          expect(articles[0].comment_count).toBe(2);
+          expect(articles[0]).toMatchObject({
+            author: "icellusedkars",
+            title: "Eight pug gifs that remind me of mitch",
+            article_id: 3,
+            topic: "mitch",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: 2,
+          });
         });
     });
   });
@@ -134,16 +136,17 @@ describe("/api/articles", () => {
             expect(typeof article.article_img_url).toBe("string");
             expect(typeof article.comment_count).toBe("number");
           });
-          expect(articles[0].article_id).toBe(7);
-          expect(articles[0].author).toBe("icellusedkars");
-          expect(articles[0].title).toBe("Z");
-          expect(articles[0].topic).toBe("mitch");
-          expect(articles[0].created_at).toBe("2020-01-07T14:08:00.000Z");
-          expect(articles[0].votes).toBe(0);
-          expect(articles[0].article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
-          expect(articles[0].comment_count).toBe(0);
+          expect(articles[0]).toMatchObject({
+            author: "icellusedkars",
+            title: "Z",
+            article_id: 7,
+            topic: "mitch",
+            created_at: "2020-01-07T14:08:00.000Z",
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: 0,
+          });
         });
     });
     test("400: Responds with bad request if order query is misspelled", () => {
@@ -208,17 +211,17 @@ describe("/api/articles", () => {
             expect(typeof article.article_img_url).toBe("string");
             expect(typeof article.comment_count).toBe("number");
           });
-          expect(articles[0].article_id).toBe(5);
-          expect(articles[0].author).toBe("rogersop");
-          expect(articles[0].title).toBe(
-            "UNCOVERED: catspiracy to bring down democracy"
-          );
-          expect(articles[0].created_at).toBe("2020-08-03T13:14:00.000Z");
-          expect(articles[0].votes).toBe(0);
-          expect(articles[0].article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
-          expect(articles[0].comment_count).toBe(2);
+          expect(articles[0]).toMatchObject({
+            author: "rogersop",
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            article_id: 5,
+            topic: "cats",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: 2,
+          });
         });
     });
     test("200: Responds with an empty array if TOPIC query provided is valid, but has no articles assigned to it", () => {
@@ -263,11 +266,12 @@ describe("/api/users", () => {
             expect(typeof user.name).toBe("string");
             expect(typeof user.avatar_url).toBe("string");
           });
-          expect(users[0].username).toBe("butter_bridge");
-          expect(users[0].name).toBe("jonny");
-          expect(users[0].avatar_url).toBe(
-            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
-          );
+          expect(users[0]).toMatchObject({
+            username: "butter_bridge",
+            name: "jonny",
+            avatar_url:
+              "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          });
         });
     });
   });
@@ -280,17 +284,20 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/3")
         .expect(200)
         .then(({ body }) => {
-          const article = body.article;
-          expect(article.article_id).toBe(3);
-          expect(article.author).toBe("icellusedkars");
-          expect(article.title).toBe("Eight pug gifs that remind me of mitch");
-          expect(article.body).toBe("some gifs");
-          expect(article.topic).toBe("mitch");
-          expect(article.created_at).toBe("2020-11-03T09:12:00.000Z");
-          expect(article.votes).toBe(0);
-          expect(article.article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
+          expect(body).toMatchObject({
+            article: {
+              article_id: 3,
+              title: "Eight pug gifs that remind me of mitch",
+              topic: "mitch",
+              author: "icellusedkars",
+              body: "some gifs",
+              created_at: "2020-11-03T09:12:00.000Z",
+              votes: 0,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+              comment_count: 2,
+            },
+          });
         });
     });
     test("200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint - ADDITION of comment_count property", () => {
@@ -326,24 +333,19 @@ describe("/api/articles/:article_id", () => {
         .send({ inc_votes: 3 })
         .expect(200)
         .then(({ body }) => {
-          const {
-            article_id,
-            title,
-            topic,
-            author,
-            created_at,
-            votes,
-            article_img_url,
-          } = body.updatedArticle;
-          expect(votes).toBe(3);
-          expect(article_id).toBe(5);
-          expect(title).toBe("UNCOVERED: catspiracy to bring down democracy");
-          expect(topic).toBe("cats");
-          expect(author).toBe("rogersop");
-          expect(created_at).toBe("2020-08-03T13:14:00.000Z");
-          expect(article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
+          expect(body).toMatchObject({
+            updatedArticle: {
+              article_id: 5,
+              title: "UNCOVERED: catspiracy to bring down democracy",
+              topic: "cats",
+              author: "rogersop",
+              body: "Bastet walks amongst us, and the cats are taking arms!",
+              created_at: "2020-08-03T13:14:00.000Z",
+              votes: 3,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            },
+          });
         });
     });
     test("200: Updates an article specified by article_id, responding with updated article - DECREASE votes - leaving other property values unchanged", () => {
@@ -352,24 +354,19 @@ describe("/api/articles/:article_id", () => {
         .send({ inc_votes: -46 })
         .expect(200)
         .then(({ body }) => {
-          const {
-            article_id,
-            title,
-            topic,
-            author,
-            created_at,
-            votes,
-            article_img_url,
-          } = body.updatedArticle;
-          expect(votes).toBe(54);
-          expect(article_id).toBe(1);
-          expect(title).toBe("Living in the shadow of a great man");
-          expect(topic).toBe("mitch");
-          expect(author).toBe("butter_bridge");
-          expect(created_at).toBe("2020-07-09T20:11:00.000Z");
-          expect(article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
+          expect(body).toMatchObject({
+            updatedArticle: {
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 54,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            },
+          });
         });
     });
     test("200: Responds with an unchanged article when an empty body is sent", () => {
@@ -378,24 +375,19 @@ describe("/api/articles/:article_id", () => {
         .send({})
         .expect(200)
         .then(({ body }) => {
-          const {
-            article_id,
-            title,
-            topic,
-            author,
-            created_at,
-            votes,
-            article_img_url,
-          } = body.updatedArticle;
-          expect(votes).toBe(100);
-          expect(article_id).toBe(1);
-          expect(title).toBe("Living in the shadow of a great man");
-          expect(topic).toBe("mitch");
-          expect(author).toBe("butter_bridge");
-          expect(created_at).toBe("2020-07-09T20:11:00.000Z");
-          expect(article_img_url).toBe(
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-          );
+          expect(body).toMatchObject({
+            updatedArticle: {
+              article_id: 1,
+              title: "Living in the shadow of a great man",
+              topic: "mitch",
+              author: "butter_bridge",
+              body: "I find this existence challenging",
+              created_at: "2020-07-09T20:11:00.000Z",
+              votes: 100,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            },
+          });
         });
     });
     test.todo(
@@ -449,11 +441,14 @@ describe("/api/articles/:article_id/comments", () => {
             expect(typeof comment.author).toBe("string");
             expect(typeof comment.body).toBe("string");
           });
-          expect(comments[0].comment_id).toBe(5);
-          expect(comments[0].votes).toBe(0);
-          expect(comments[0].created_at).toBe("2020-11-03T21:00:00.000Z");
-          expect(comments[0].author).toBe("icellusedkars");
-          expect(comments[0].body).toBe("I hate streaming noses");
+          expect(comments[0]).toMatchObject({
+            comment_id: 5,
+            article_id: 1,
+            body: "I hate streaming noses",
+            votes: 0,
+            author: "icellusedkars",
+            created_at: "2020-11-03T21:00:00.000Z",
+          });
         });
     });
     test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
@@ -483,13 +478,17 @@ describe("/api/articles/:article_id/comments", () => {
         })
         .expect(201)
         .then(({ body }) => {
-          const { comment_id, article_id, author } = body.insertedComment;
-          expect(comment_id).toBe(19);
-          expect(article_id).toBe(3);
-          expect(author).toBe("butter_bridge");
-          expect(body.insertedComment.body).toBe(
-            "I love using gifs, there's one for every occasion"
-          );
+          console.log(body);
+          expect(body).toMatchObject({
+            insertedComment: {
+              comment_id: 19,
+              article_id: 3,
+              body: "I love using gifs, there's one for every occasion",
+              votes: 0,
+              author: "butter_bridge",
+            },
+          });
+          expect(body.insertedComment).toHaveProperty("created_at");
         });
     });
     test("400: Responds with bad request when request body does not contain required properties", () => {
