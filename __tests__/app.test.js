@@ -508,7 +508,6 @@ describe("/api/articles/:article_id/comments", () => {
         })
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
           expect(body).toMatchObject({
             insertedComment: {
               comment_id: 19,
