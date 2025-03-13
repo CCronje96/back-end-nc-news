@@ -277,6 +277,36 @@ describe("/api/users", () => {
   });
 });
 
+describe("/api/users/:username", () => {
+  describe("GET", () => {
+    test("200: Responds with a user object, with the expected properties and with corresponding username as provided in parametric endpoint", () => {
+      return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            user: [
+              {
+                username: "butter_bridge",
+                name: "jonny",
+                avatar_url:
+                  "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+              },
+            ],
+          });
+        });
+    });
+    test("404: Responds with 'not found' when username provided is valid, but doesnt exist", () => {
+      return request(app)
+        .get("/api/users/butterbridge")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
+        });
+    });
+  });
+});
+
 describe("/api/articles/:article_id", () => {
   describe("GET", () => {
     test("200: Responds with an article object, with expected properties and with corresponding article_id as provided in parametric endpoint", () => {
@@ -309,7 +339,7 @@ describe("/api/articles/:article_id", () => {
           expect(article.comment_count).toBe(2);
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    test("400: Responds with 'bad request' when article_id provided is invalid", () => {
       return request(app)
         .get("/api/articles/three")
         .expect(400)

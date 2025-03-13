@@ -31,43 +31,35 @@ These files are necessary to establish a working connection to both the test and
 
 **Paste the following line into the corresponding file:**
 
-> // in .env.test  
+> **inside .env.test**  
 > PGDATABASE=nc_news_test
 
-> // in .env.development  
+> **inside .env.development**  
 > PGDATABASE=nc_news
-
-## Verifying Databse Connections
-
-To confirm your databse connections are set up correctly, run the following scripts in your terminal:
-
-> npm run test-seed  
-> // this should console.log "Connected to nc_news_test"
-
-> npm run seed-dev  
-> // this should console.log "Connected to nc_news"
 
 ## Creating & Seeding The Databases
 
 Run the following scripts in your terminal:
 
-> // set up the databases:  
+> **set up the databases:**  
 > npm run setup-dbs
 
-> // seed the **test** database:  
-> npm run test-seed
+> **seed the test database:**  
+> npm run test-seed  
+> // if the database connection is set up correctly, this should console.log **"Connected to nc_news_test"**
 
-> // seed the **dev** database:  
-> npm run dev-seed
+> **seed the dev database:**  
+> npm run dev-seed  
+> // if the database connection is set up correctly, this should console.log **"Connected to nc_news"**
 
 ## Run The Tests
 
 Run the following scripts for the test suites:
 
-> // run all test suites at once:  
+> **run all test suites at once:**  
 > npm run test
 
-> // run each test suite individually:  
+> **run each test suite individually:**  
 > npm run test app  
 > npm run test utils  
 > npm run test seed
