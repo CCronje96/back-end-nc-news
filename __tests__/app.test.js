@@ -605,4 +605,23 @@ describe("/api/comments/:comment_id", () => {
         });
     });
   });
+  describe("PATCH", () => {
+    test.only("200: Updates a comment specified by comment_id, responding with updated comment - INCREASE votes - leaving other property values unchanged", () => {
+      return request(app)
+        .patch("/api/comments/2")
+        .send({ inc_votes: 16 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            updatedComment: {
+              article_id: 1,
+              body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+              votes: 30,
+              author: "butter_bridge",
+              created_at: "2020-10-31T03:03:00.000Z",
+            },
+          });
+        });
+    });
+  });
 });
