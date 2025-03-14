@@ -30,6 +30,10 @@ jobs:
 
       - name: Set Timezone
         uses: szenius/set-timezone@v2.0
+          with:
+              timezoneLinux: "Europe/London"
+              timezoneMacos: "Europe/London"
+              timezoneWindows: "Greenwich Mean Time"
 
       - name: Run tests
         run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
