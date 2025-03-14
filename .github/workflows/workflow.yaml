@@ -28,12 +28,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set Timezone
+        uses: szenius/set-timezone@v2.0
+
       - name: Run tests
         run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
