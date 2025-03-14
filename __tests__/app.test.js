@@ -269,6 +269,7 @@ describe("/api/articles", () => {
               article_id: 14,
               title: "It's Friday",
               topic: "paper",
+              created_at: expect.any(String),
               author: "butter_bridge",
               body: "Gotta get down on Friday",
               votes: 0,
@@ -276,7 +277,6 @@ describe("/api/articles", () => {
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
             },
           });
-          expect(body.insertedArticle).toHaveProperty("created_at");
         });
     });
   });
@@ -544,10 +544,10 @@ describe("/api/articles/:article_id/comments", () => {
               article_id: 3,
               body: "I love using gifs, there's one for every occasion",
               votes: 0,
+              created_at: expect.any(String),
               author: "butter_bridge",
             },
           });
-          expect(body.insertedComment).toHaveProperty("created_at");
         });
     });
     test("400: Responds with bad request when request body does not contain required properties", () => {
