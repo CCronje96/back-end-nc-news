@@ -1,5 +1,5 @@
 const { selectUsers, selectUserByName } = require("../models/users.models");
-const { checkExists } = require("../utils");
+const { checkExists } = require("../../utils");
 
 exports.getUsers = (request, response, next) => {
   selectUsers().then((users) => {

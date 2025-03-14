@@ -5,7 +5,7 @@ const {
   insertCommentByArticleId,
   updateArticleById,
 } = require("../models/articles.models");
-const { checkExists } = require("../utils");
+const { checkExists } = require("../../utils");
 
 exports.getAllArticles = (request, response, next) => {
   const { sort_by, order, topic } = request.query;
