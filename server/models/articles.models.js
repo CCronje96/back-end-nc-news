@@ -87,6 +87,18 @@ exports.updateArticleById = (id, changeValue) => {
   }
 };
 
+exports.insertArticle = (article) => {
+  const { title, topic, author, body, article_img_url } = article;
+  return db
+    .query(
+      `INSERT INTO articles (title, topic, author, body, article_img_url) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [title, topic, author, body, article_img_url]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
 // interact with DB
 // necessary data manipulations
 // return back to controller

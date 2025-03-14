@@ -251,7 +251,7 @@ describe("/api/articles", () => {
     });
   });
   describe("POST", () => {
-    xtest("201: Creates a new article object and inserts the article into the database, responding with the inserted article object", () => {
+    test("201: Creates a new article object and inserts the article into the database, responding with the inserted article object", () => {
       return request(app)
         .post("/api/articles")
         .send({
@@ -270,13 +270,58 @@ describe("/api/articles", () => {
               title: "It's Friday",
               topic: "paper",
               created_at: expect.any(String),
-              author: "butter_bridge",
+              author: "lurker",
               body: "Gotta get down on Friday",
               votes: 0,
               article_img_url:
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
             },
           });
+        });
+    });
+    test("400: Responds with bad request when request body does not contain required properties", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          topic: "paper",
+          body: "Gotta get down on Friday",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values or outside constraints", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          title: "It's Friday",
+          topic:
+            "this topic is too long and won't work due to the constraint in the table",
+          author: "lurker",
+          body: "Gotta get down on Friday",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values where property value is foreign key referenced from another table", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          title: "It's Friday",
+          topic: "paper",
+          author: "someoneNew",
+          body: "Gotta get down on Friday",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
         });
     });
   });
