@@ -10,6 +10,9 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
+      - name: Set time zone to UTC
+        run: sudo timedatectl set-timezone UTC
+
       - name: Checkout Repo
         uses: actions/checkout@v4
 
@@ -27,13 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Set Timezone
-        uses: szenius/set-timezone@v2.0
-          with:
-            timezoneLinux: "Europe/London"
-            timezoneMacos: "Europe/London"
-            timezoneWindows: "Greenwich Mean Time"
 
       - name: Run tests
         run: PGDATABASE=my_db PGUSER=test_user PGPASSWORD=test_password npm t
