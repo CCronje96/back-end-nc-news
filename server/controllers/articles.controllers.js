@@ -5,29 +5,41 @@ const {
   insertCommentByArticleId,
   updateArticleById,
   insertArticle,
+  selectArticleCount,
 } = require("../models/articles.models");
 const { checkExists } = require("../../utils");
 
 exports.getAllArticles = (request, response, next) => {
-  const { sort_by, order, topic } = request.query;
+  const { sort_by, order, topic, limit = 10, p = 1 } = request.query;
 
-  const validQueryParams = ["sort_by", "order", "topic"];
+  const validQueryParams = ["sort_by", "order", "topic", "limit", "p"];
   const invalidQueryParams = Object.keys(request.query).filter(
     (key) => !validQueryParams.includes(key)
   );
   if (invalidQueryParams.length > 0) {
     return response.status(400).send({ message: "bad request" });
   }
-  const promises = [selectAllArticles(sort_by, order, topic)];
+
+  const page = Number(p);
+  const pageSize = Number(limit);
+  const offset = (page - 1) * pageSize;
+
+  const promises = [
+    selectAllArticles(sort_by, order, topic, pageSize, offset),
+    selectArticleCount(topic),
+  ];
   if (topic) {
     promises.push(checkExists("topics", "slug", topic));
   }
 
   Promise.all(promises)
-    .then(([articles]) => {
-      response.status(200).send({ articles: articles });
+    .then(([articles, totalCount]) => {
+      response
+        .status(200)
+        .send({ articles: articles, total_count: totalCount[0].count });
     })
     .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
