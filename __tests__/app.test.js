@@ -296,7 +296,7 @@ describe("/api/users/:username", () => {
           });
         });
     });
-    test("404: Responds with 'not found' when username provided is valid, but doesnt exist", () => {
+    test("404: Responds with not found when username provided is valid, but doesnt exist", () => {
       return request(app)
         .get("/api/users/butterbridge")
         .expect(404)
@@ -339,7 +339,7 @@ describe("/api/articles/:article_id", () => {
           expect(article.comment_count).toBe(2);
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is invalid", () => {
+    test("400: Responds with bad request when article_id provided is invalid", () => {
       return request(app)
         .get("/api/articles/three")
         .expect(400)
@@ -347,7 +347,7 @@ describe("/api/articles/:article_id", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+    test("404: Responds with not found when article_id provided is valid, but doesnt exist", () => {
       return request(app)
         .get("/api/articles/58")
         .expect(404)
@@ -432,7 +432,7 @@ describe("/api/articles/:article_id", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    test("400: Responds with bad request when article_id provided is invalid'", () => {
       return request(app)
         .patch("/api/articles/three")
         .send({ inc_votes: 3 })
@@ -441,7 +441,7 @@ describe("/api/articles/:article_id", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+    test("404: Responds with not found when article_id provided is valid, but doesnt exist", () => {
       return request(app)
         .patch("/api/articles/58")
         .send({ inc_votes: 3 })
@@ -481,7 +481,7 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    test("400: Responds with bad request when article_id provided is invalid'", () => {
       return request(app)
         .get("/api/articles/three/comments")
         .expect(400)
@@ -489,7 +489,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("404: Responds with 'not found' when article_id provided is valid, but doesnt exist", () => {
+    test("404: Responds with not found when article_id provided is valid, but doesnt exist", () => {
       return request(app)
         .get("/api/articles/58/comments")
         .expect(404)
@@ -556,7 +556,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is invalid'", () => {
+    test("400: Responds with bad request when article_id provided is invalid'", () => {
       return request(app)
         .post("/api/articles/three/comments")
         .send({
@@ -568,7 +568,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.message).toBe("bad request");
         });
     });
-    test("400: Responds with 'bad request' when article_id provided is valid, but doesn't exist, which is a requirement for comment to be created", () => {
+    test("400: Responds with bad request when article_id provided is valid, but doesn't exist, which is a requirement for comment to be created", () => {
       return request(app)
         .post("/api/articles/58/comments")
         .send({
@@ -606,7 +606,7 @@ describe("/api/comments/:comment_id", () => {
     });
   });
   describe("PATCH", () => {
-    test.only("200: Updates a comment specified by comment_id, responding with updated comment - INCREASE votes - leaving other property values unchanged", () => {
+    test("200: Updates a comment specified by comment_id, responding with updated comment - INCREASE votes - leaving other property values unchanged", () => {
       return request(app)
         .patch("/api/comments/2")
         .send({ inc_votes: 16 })
@@ -614,6 +614,7 @@ describe("/api/comments/:comment_id", () => {
         .then(({ body }) => {
           expect(body).toMatchObject({
             updatedComment: {
+              comment_id: 2,
               article_id: 1,
               body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
               votes: 30,
@@ -621,6 +622,51 @@ describe("/api/comments/:comment_id", () => {
               created_at: "2020-10-31T03:03:00.000Z",
             },
           });
+        });
+    });
+    test("200: Updates a comment specified by comment_id, responding with updated comment - DECREASE votes - leaving other property values unchanged", () => {
+      return request(app)
+        .patch("/api/comments/5")
+        .send({ inc_votes: -50 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            updatedComment: {
+              comment_id: 5,
+              article_id: 1,
+              body: "I hate streaming noses",
+              votes: -50,
+              author: "icellusedkars",
+              created_at: "2020-11-03T21:00:00.000Z",
+            },
+          });
+        });
+    });
+    test("400: Responds with bad request when request body has required properties, but with invalid values", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: "three" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request when comment_id provided is invalid'", () => {
+      return request(app)
+        .patch("/api/comments/three")
+        .send({ inc_votes: 3 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("404: Responds with not found when comment_id provided is valid, but doesnt exist", () => {
+      return request(app)
+        .patch("/api/comments/58")
+        .send({ inc_votes: 3 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("not found");
         });
     });
   });
