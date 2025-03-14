@@ -13,7 +13,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe("/notAPath", () => {
+describe("/api/notAPath", () => {
   test("ANY 404: responds with error message when path is not found", () => {
     return request(app)
       .get("/api/notAPath")

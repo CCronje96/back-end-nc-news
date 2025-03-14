@@ -1,5 +1,5 @@
 const { deleteCommentById } = require("../models/comments.models");
-const { checkExists } = require("../utils");
+const { checkExists } = require("../../utils");
 
 exports.removeCommentById = (request, response, next) => {
   const { comment_id } = request.params;
@@ -8,7 +8,7 @@ exports.removeCommentById = (request, response, next) => {
       deleteCommentById(comment_id);
     })
     .then(() => {
-      response.status(204).end();
+      response.status(204).send();
     })
     .catch((error) => {
       next(error);
