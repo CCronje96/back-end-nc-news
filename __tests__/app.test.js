@@ -64,7 +64,7 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({ body }) => {
           const articles = body.articles;
-          expect(articles.length).toBe(13);
+          expect(articles.length).toBe(10);
           expect(articles).toBeSortedBy("created_at", { descending: true });
           articles.forEach((article) => {
             expect(typeof article.article_id).toBe("number");
@@ -87,6 +87,32 @@ describe("/api/articles", () => {
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
             comment_count: 2,
           });
+        });
+    });
+    test("200: Responds with an array of articles, limited by PAGINATION", () => {
+      return request(app)
+        .get("/api/articles?limit=2&p=1")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(articles.length).toBe(2);
+          expect(body.total_count).toBe("13");
+        });
+    });
+    test("400: Responds with bad request if pagination query values are invalid, limited by PAGINATION", () => {
+      return request(app)
+        .get("/api/articles?limit=two&p=1")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
+        });
+    });
+    test("400: Responds with bad request if pagination queries are misspelled, limited by PAGINATION", () => {
+      return request(app)
+        .get("/api/articles?limt=2&p=1")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe("bad request");
         });
     });
   });
@@ -124,7 +150,7 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({ body }) => {
           const articles = body.articles;
-          expect(articles.length).toBe(13);
+          expect(articles.length).toBe(10);
           expect(articles).toBeSortedBy("created_at");
           articles.forEach((article) => {
             expect(typeof article.article_id).toBe("number");

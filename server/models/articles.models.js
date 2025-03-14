@@ -1,7 +1,7 @@
 const db = require("../../db/connection");
 const { getValidColumns } = require("../../utils");
 
-exports.selectAllArticles = async (sort_by, order, topic) => {
+exports.selectAllArticles = async (sort_by, order, topic, limit, offset) => {
   let queryValue = [];
   let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COALESCE(COUNT(comments.article_id), 0)::int AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
 
@@ -11,11 +11,11 @@ exports.selectAllArticles = async (sort_by, order, topic) => {
   }
 
   queryString += `GROUP BY articles.article_id `;
+
   const table = "articles";
   const validColumns = await getValidColumns(table);
 
   const validOrderValues = ["asc", "desc"];
-
   const isInvalidOrder = order && !validOrderValues.includes(order);
   const isInvalidSortBy = sort_by && !validColumns.includes(sort_by);
 
@@ -24,10 +24,28 @@ exports.selectAllArticles = async (sort_by, order, topic) => {
   }
 
   const validSortBy = sort_by || "created_at";
-
   const validOrder = validOrderValues.includes(order) ? order : "desc";
 
-  queryString += `ORDER BY ${validSortBy} ${validOrder}`;
+  queryString += `ORDER BY ${validSortBy} ${validOrder} LIMIT $${
+    queryValue.length + 1
+  } OFFSET $${queryValue.length + 2}`;
+
+  queryValue.push(limit, offset);
+
+  return db.query(queryString, queryValue).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.selectArticleCount = async (topic) => {
+  let queryValue = [];
+  let queryString = `SELECT COUNT(*) FROM articles `;
+
+  if (topic) {
+    queryValue.push(topic);
+    queryString += `WHERE topic = $1`;
+  }
+
   return db.query(queryString, queryValue).then(({ rows }) => {
     return rows;
   });
