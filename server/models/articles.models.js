@@ -95,7 +95,11 @@ exports.insertArticle = (article) => {
       [title, topic, author, body, article_img_url]
     )
     .then(({ rows }) => {
-      return rows[0];
+      const article_id = rows[0].article_id;
+      return this.selectArticleById(article_id);
+    })
+    .then((output) => {
+      return output;
     });
 };
 
