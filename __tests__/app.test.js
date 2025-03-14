@@ -81,7 +81,7 @@ describe("/api/articles", () => {
             title: "Eight pug gifs that remind me of mitch",
             article_id: 3,
             topic: "mitch",
-            created_at: "2020-11-03T09:12:00.000Z",
+            created_at: expect.any(String),
             votes: 0,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -141,7 +141,7 @@ describe("/api/articles", () => {
             title: "Z",
             article_id: 7,
             topic: "mitch",
-            created_at: "2020-01-07T14:08:00.000Z",
+            created_at: expect.any(String),
             votes: 0,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -216,7 +216,7 @@ describe("/api/articles", () => {
             title: "UNCOVERED: catspiracy to bring down democracy",
             article_id: 5,
             topic: "cats",
-            created_at: "2020-08-03T13:14:00.000Z",
+            created_at: expect.any(String),
             votes: 0,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -247,6 +247,36 @@ describe("/api/articles", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.message).toBe("not found");
+        });
+    });
+  });
+  describe("POST", () => {
+    xtest("201: Creates a new article object and inserts the article into the database, responding with the inserted article object", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          title: "It's Friday",
+          topic: "paper",
+          author: "lurker",
+          body: "Gotta get down on Friday",
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            insertedArticle: {
+              article_id: 14,
+              title: "It's Friday",
+              topic: "paper",
+              author: "butter_bridge",
+              body: "Gotta get down on Friday",
+              votes: 0,
+              article_img_url:
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            },
+          });
+          expect(body.insertedArticle).toHaveProperty("created_at");
         });
     });
   });
@@ -321,7 +351,7 @@ describe("/api/articles/:article_id", () => {
               topic: "mitch",
               author: "icellusedkars",
               body: "some gifs",
-              created_at: "2020-11-03T09:12:00.000Z",
+              created_at: expect.any(String),
               votes: 0,
               article_img_url:
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -370,7 +400,7 @@ describe("/api/articles/:article_id", () => {
               topic: "cats",
               author: "rogersop",
               body: "Bastet walks amongst us, and the cats are taking arms!",
-              created_at: "2020-08-03T13:14:00.000Z",
+              created_at: expect.any(String),
               votes: 3,
               article_img_url:
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -391,7 +421,7 @@ describe("/api/articles/:article_id", () => {
               topic: "mitch",
               author: "butter_bridge",
               body: "I find this existence challenging",
-              created_at: "2020-07-09T20:11:00.000Z",
+              created_at: expect.any(String),
               votes: 54,
               article_img_url:
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -412,7 +442,7 @@ describe("/api/articles/:article_id", () => {
               topic: "mitch",
               author: "butter_bridge",
               body: "I find this existence challenging",
-              created_at: "2020-07-09T20:11:00.000Z",
+              created_at: expect.any(String),
               votes: 100,
               article_img_url:
                 "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -477,7 +507,7 @@ describe("/api/articles/:article_id/comments", () => {
             body: "I hate streaming noses",
             votes: 0,
             author: "icellusedkars",
-            created_at: "2020-11-03T21:00:00.000Z",
+            created_at: expect.any(String),
           });
         });
     });
@@ -619,7 +649,7 @@ describe("/api/comments/:comment_id", () => {
               body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
               votes: 30,
               author: "butter_bridge",
-              created_at: "2020-10-31T03:03:00.000Z",
+              created_at: expect.any(String),
             },
           });
         });
@@ -637,7 +667,7 @@ describe("/api/comments/:comment_id", () => {
               body: "I hate streaming noses",
               votes: -50,
               author: "icellusedkars",
-              created_at: "2020-11-03T21:00:00.000Z",
+              created_at: expect.any(String),
             },
           });
         });

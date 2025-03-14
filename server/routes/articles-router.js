@@ -10,6 +10,8 @@ const articlesRouter = require("express").Router();
 
 articlesRouter.get("/", getAllArticles);
 
+articlesRouter.post("/");
+
 articlesRouter.get("/:article_id", getArticleById);
 
 articlesRouter.get("/:article_id/comments", getCommentsByArticleId);

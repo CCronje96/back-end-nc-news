@@ -89,6 +89,8 @@ exports.patchArticleById = (request, response, next) => {
     });
 };
 
+exports.postArticle;
+
 // receive the request
 // extract necessary info
 // invoke the model
