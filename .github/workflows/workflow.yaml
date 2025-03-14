@@ -10,8 +10,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Set time zone to UTC
-        run: sudo timedatectl set-timezone UTC
+      - name: Set time zone to GMT
+        run: sudo timedatectl set-timezone GMT
 
       - name: Checkout Repo
         uses: actions/checkout@v4
