@@ -39,7 +39,6 @@ exports.getAllArticles = (request, response, next) => {
         .send({ articles: articles, total_count: totalCount[0].count });
     })
     .catch((error) => {
-      console.log(error);
       next(error);
     });
 };
