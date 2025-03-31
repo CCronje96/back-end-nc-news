@@ -9,7 +9,7 @@
     "test": "jest --runInBand",
     "prepare": "husky install",
     "start": "node listen.js",
-    "test-seed": "jest seed.test.js", 
+    "test-seed": "jest seed.test.js",
     "seed-prod": "NODE_ENV=production npm run dev-seed"
   },
   "repository": {
@@ -33,13 +33,15 @@
     "supertest": "^7.0.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "pg": "^8.13.3"
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "jest-extended/all", "jest-sorted"
+      "jest-extended/all",
+      "jest-sorted"
     ]
   }
 }
