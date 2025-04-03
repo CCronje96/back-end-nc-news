@@ -15,9 +15,13 @@ exports.selectAllArticles = async (sort_by, order, topic, limit, offset) => {
   const table = "articles";
   const validColumns = await getValidColumns(table);
 
+  const validComputedColumns = ["comment_count"];
+
+  const allValidColumns = [...validColumns, ...validComputedColumns];
+
   const validOrderValues = ["asc", "desc"];
   const isInvalidOrder = order && !validOrderValues.includes(order);
-  const isInvalidSortBy = sort_by && !validColumns.includes(sort_by);
+  const isInvalidSortBy = sort_by && !allValidColumns.includes(sort_by);
 
   if (isInvalidOrder || isInvalidSortBy) {
     return Promise.reject({ status: 400, message: "bad request" });
