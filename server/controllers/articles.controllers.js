@@ -17,19 +17,18 @@ exports.getAllArticles = (request, response, next) => {
     (key) => !validQueryParams.includes(key)
   );
   if (invalidQueryParams.length > 0) {
-    return response.status(400).send({ message: "bad request" });
+    return response
+      .status(400)
+      .send({ message: "bad request: invalid query parameters." });
   }
   const validQueries = Object.keys(request.query).every((key) =>
     validQueryParams.includes(key)
   );
 
   if (!validQueries) {
-    return response
-      .status(400)
-      .send({
-        message:
-          "Bad request: Some query parameters are misspelled or invalid.",
-      });
+    return response.status(400).send({
+      message: "bad request: invalid query parameters.",
+    });
   }
 
   const page = Number(p);
