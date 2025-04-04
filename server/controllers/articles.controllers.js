@@ -19,6 +19,18 @@ exports.getAllArticles = (request, response, next) => {
   if (invalidQueryParams.length > 0) {
     return response.status(400).send({ message: "bad request" });
   }
+  const validQueries = Object.keys(request.query).every((key) =>
+    validQueryParams.includes(key)
+  );
+
+  if (!validQueries) {
+    return response
+      .status(400)
+      .send({
+        message:
+          "Bad request: Some query parameters are misspelled or invalid.",
+      });
+  }
 
   const page = Number(p);
   const pageSize = Number(limit);
