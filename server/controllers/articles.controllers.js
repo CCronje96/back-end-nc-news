@@ -17,9 +17,7 @@ exports.getAllArticles = (request, response, next) => {
     (key) => !validQueryParams.includes(key)
   );
   if (invalidQueryParams.length > 0) {
-    return response
-      .status(400)
-      .send({ message: "bad request: invalid query parameters." });
+    return response.status(400).send({ message: "bad request" });
   }
   const validQueries = Object.keys(request.query).every((key) =>
     validQueryParams.includes(key)
